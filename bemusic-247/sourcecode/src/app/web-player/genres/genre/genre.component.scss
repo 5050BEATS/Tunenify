@@ -1,0 +1,19 @@
+@import "variables";
+
+:host {
+  display: block;
+  padding: $page-margin;
+}
+
+h1 {
+  margin: 0 0 10px;
+  font-weight: 300;
+}
+
+.genre-name {
+  text-transform: capitalize;
+}
+
+loading-indicator {
+  margin: 30px 0;
+}

@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "common-imports";
+@import "container";
+@import "scss/webkit-scrollbar";
+@import "scss/perfect-scrollbar";
+// @import "scss/web-player-overlay-theme";
+@import "scss/media-page-header.scss";
+@import "context-menu";
+@import "app/web-player/context-menu/web-player-context-menu";
+@import "scss/media-modal-autocomplete";
+
+account-settings {
+  padding: 15px;
+}
+
+body, html {
+  height: 100%;
+}

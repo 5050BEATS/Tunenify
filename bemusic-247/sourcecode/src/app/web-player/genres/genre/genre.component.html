@@ -1,0 +1,11 @@
+<h1 class="genre-name">{{genre.name}} {{ 'Artists' | trans }}</h1>
+
+<ad-host slot="ads.general_top"></ad-host>
+
+<media-grid>
+    <artist-item *ngFor="let artist of pagination.data" [artist]="artist" [contextMenu]="{item: artist, type: 'artist'}"></artist-item>
+</media-grid>
+
+<loading-indicator [isVisible]="loading" class="inline"></loading-indicator>
+
+<ad-host slot="ads.general_bottom" class="margin-bottom"></ad-host>

@@ -1,0 +1,45 @@
+<data-table [dataSource]="dataSource" itemsName="channels" matSort class="responsive-material-table">
+    <ng-container headerActions>
+        <a mat-raised-button color="accent" routerLink="/admin/channels/new" trans>Add</a>
+    </ng-container>
+
+    <ng-container headerSelectedActions>
+        <button mat-icon-button [matTooltip]="'Delete selected' | trans" (click)="maybeDeleteSelectedChannels()">
+            <mat-icon svgIcon="delete"></mat-icon>
+        </button>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Name</mat-header-cell>
+        <mat-cell *matCellDef="let channel">{{channel.name}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="content_type">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Content Type</mat-header-cell>
+        <mat-cell *matCellDef="let channel" data-label="Content Type: ">{{channel.content_type}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="layout">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Layout</mat-header-cell>
+        <mat-cell *matCellDef="let channel" data-label="Layout: ">{{channel.layout}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="auto_update">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Auto Update</mat-header-cell>
+        <mat-cell *matCellDef="let channel" class="hidden-on-mobile">{{channel.auto_update ? channel.auto_update : '-'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="created_at">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Created</mat-header-cell>
+        <mat-cell *matCellDef="let channel" class="hidden-on-mobile">{{channel.created_at | formattedDate}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let channel">
+            <a mat-icon-button [routerLink]="['/admin/channels', channel.id]" [matTooltip]="'Edit channel' | trans">
+                <mat-icon svgIcon="edit"></mat-icon>
+            </a>
+        </mat-cell>
+    </ng-container>
+</data-table>

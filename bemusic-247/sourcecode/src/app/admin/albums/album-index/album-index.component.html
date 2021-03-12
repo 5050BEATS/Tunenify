@@ -1,0 +1,55 @@
+<data-table [dataSource]="dataSource" itemsName="albums" matSort>
+    <a mat-raised-button color="accent" routerLink="/admin/upload" *ngIf="currentUser.hasPermission('albums.create')" headerActions trans>Upload</a>
+    <a mat-button routerLink="/admin/albums/new" *ngIf="currentUser.hasPermission('albums.create')" headerActions trans>Create</a>
+
+    <button mat-icon-button (click)="maybeDeleteSelectedAlbums()" *ngIf="currentUser.hasPermission('albums.delete')" headerSelectedActions trans>
+        <mat-icon svgIcon="delete"></mat-icon>
+    </button>
+
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="name-with-image" trans>Album</mat-header-cell>
+        <mat-cell *matCellDef="let album" class="name-with-image">
+            <media-image [media]="album" default="album"></media-image>
+            <a [routerLink]="urls.album(album)">{{album.name}}</a>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="artist">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="artist_id" class="name-with-image" trans>Artist</mat-header-cell>
+        <mat-cell *matCellDef="let album" class="name-with-image">
+            <ng-container *ngIf="album.artist as artist">
+                <media-image [media]="artist" default="artist"></media-image>
+                <a [routerLink]="urls.artist(artist)">{{artist.name}}</a>
+            </ng-container>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="release_date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Release Date</mat-header-cell>
+        <mat-cell *matCellDef="let album"> {{album.release_date ? album.release_date: '&ndash;'}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="popularity">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="spotify_popularity" trans>Popularity</mat-header-cell>
+        <mat-cell *matCellDef="let album"> {{album.spotify_popularity}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="number_of_tracks">
+        <mat-header-cell *matHeaderCellDef trans>Number of Tracks</mat-header-cell>
+        <mat-cell *matCellDef="let album"> {{album.tracks_count ? album.tracks_count: '&ndash;'}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="views">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Views</mat-header-cell>
+        <mat-cell *matCellDef="let album"> {{album.views ? album.views : '&ndash;'}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let album">
+            <a mat-icon-button [routerLink]="['/admin/albums', album.id]" *ngIf="currentUser.hasPermission('albums.update')" [matTooltip]="'Edit album' | trans">
+                <mat-icon svgIcon="edit"></mat-icon>
+            </a>
+        </mat-cell>
+    </ng-container>
+</data-table>

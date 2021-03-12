@@ -1,0 +1,61 @@
+@import "../../../../scss/variables";
+
+:host {
+  display: block;
+  padding: $page-margin;
+}
+
+.media-page-header {
+  padding: 0;
+  margin: 0;
+}
+
+.creator {
+  display: flex;
+  align-items: center;
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin: 5px 0 20px;
+}
+
+.creator-image {
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  margin-right: 6px;
+}
+
+.creator-link {
+  color: inherit;
+}
+
+.playlist-description {
+  margin-bottom: 20px;
+  font-size: 1.7rem;
+}
+
+.details {
+  display: flex;
+  align-items: center;
+  font-size: 1.4rem;
+
+  .meta-item:not(:first-of-type):before {
+    content: "\B7";
+    margin: 0 5px;
+  }
+}
+
+.track-list-header {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 25px;
+  border-bottom: 1px solid mat-color($app-foreground, divider);
+
+  .input-container {
+    min-width: 300px;
+  }
+}
+
+no-results-message {
+  margin-top: 40px;
+}

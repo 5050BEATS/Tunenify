@@ -1,0 +1,39 @@
+<data-table [dataSource]="dataSource" itemsName="genres" matSort>
+    <button mat-raised-button (click)="openCrupdateGenreModal()" color="accent" *ngIf="currentUser.hasPermission('genres.create')" headerActions trans>Add</button>
+
+    <button mat-icon-button [matTooltip]="'Delete selected' | trans" (click)="confirmGenresDeletion()" headerSelectedActions *ngIf="currentUser.hasPermission('genres.delete')">
+        <mat-icon svgIcon="delete"></mat-icon>
+    </button>
+
+    <ng-container matColumnDef="artist">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="name" class="name-with-image" trans>Genre</mat-header-cell>
+        <mat-cell *matCellDef="let genre" class="name-with-image">
+            <media-image [media]="genre"></media-image>
+            <a [routerLink]="urls.genre(genre)" target="_blank">{{genre.name}}</a>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="display_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Display Name</mat-header-cell>
+        <mat-cell *matCellDef="let genre"> {{genre.display_name ? genre.display_name : '-' }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="number-of-artists">
+        <mat-header-cell *matHeaderCellDef trans>Number of Artists</mat-header-cell>
+        <mat-cell *matCellDef="let genre"> {{genre.artists_count ? genre.artists_count : '-' }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="created_at">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="created_at" trans>Created At</mat-header-cell>
+        <mat-cell *matCellDef="let genre"> {{genre.created_at | formattedDate}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let genre">
+            <button mat-icon-button (click)="openCrupdateGenreModal(genre)" *ngIf="currentUser.hasPermission('genres.update')" [matTooltip]="'Edit genre' | trans">
+                <mat-icon svgIcon="edit"></mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+</data-table>

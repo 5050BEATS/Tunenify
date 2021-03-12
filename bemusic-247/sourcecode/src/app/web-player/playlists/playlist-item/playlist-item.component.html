@@ -1,0 +1,12 @@
+<div class="img-container">
+    <media-image [media]="playlist"></media-image>
+    <playback-control-button (play)="play()" (pause)="pause()" [playing]="playing()"></playback-control-button>
+</div>
+<div class="footer">
+    <a class="playlist-name primary-text" [routerLink]="urls.playlist(playlist)">{{playlist.name}}</a>
+    <div class="creator-name secondary-text">
+        <ng-container *ngIf="getCreator() as creator">
+            {{ 'By' | trans }} <a [routerLink]="urls.user(creator)" class="hover-underline">{{creator.display_name}}</a>
+        </ng-container>
+    </div>
+</div>

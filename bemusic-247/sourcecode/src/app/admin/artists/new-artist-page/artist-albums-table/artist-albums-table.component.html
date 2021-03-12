@@ -1,0 +1,54 @@
+<button mat-raised-button color="accent" (click)="openCrupdateAlbumModal()" *ngIf="currentUser.hasPermission('albums.create')" [disabled]="!artist" trans>New Album</button>
+
+<p class="save-message" *ngIf="!artist">
+    <mat-icon svgIcon="warning"></mat-icon>
+    <span trans>Save artist first to enable album creation.</span>
+</p>
+
+<mat-table [dataSource]="dataSource" matSort class="responsive-material-table">
+    <ng-container matColumnDef="image">
+        <mat-header-cell *matHeaderCellDef trans>Image</mat-header-cell>
+        <mat-cell *matCellDef="let album"><img [src]="images.getAlbumImage(album)"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef trans>Name</mat-header-cell>
+        <mat-cell *matCellDef="let album">{{album.name}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="release_date">
+        <mat-header-cell *matHeaderCellDef trans>Release Date</mat-header-cell>
+        <mat-cell *matCellDef="let album">{{album.release_date}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="popularity">
+        <mat-header-cell *matHeaderCellDef trans>Popularity</mat-header-cell>
+        <mat-cell *matCellDef="let album">{{album.spotify_popularity}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="number_of_tracks">
+        <mat-header-cell *matHeaderCellDef trans>Number of Tracks</mat-header-cell>
+        <mat-cell *matCellDef="let album">{{album.tracks.length}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let album">
+            <button type="button" mat-icon-button [matTooltip]="'Edit album' | trans" (click)="openCrupdateAlbumModal(album)">
+                <mat-icon svgIcon="edit"></mat-icon>
+            </button>
+
+            <button mat-icon-button (click)="maybeDeleteAlbum(album)" [matTooltip]="'Delete album' | trans" *ngIf="currentUser.hasPermission('albums.delete')" trans>
+                <mat-icon svgIcon="delete"></mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="['image', 'name', 'release_date', 'popularity', 'number_of_tracks', 'actions']"></mat-header-row>
+    <mat-row *matRowDef="let myRowData; columns: ['image', 'name', 'release_date', 'popularity', 'number_of_tracks', 'actions']"></mat-row>
+</mat-table>
+
+<no-results-message *ngIf="!dataSource.data.length">
+    <span primary-text trans>Nothing To Display.</span>
+    <span secondary-text trans>No albums have been attached to this artist yet.</span>
+</no-results-message>

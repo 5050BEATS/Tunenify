@@ -1,0 +1,60 @@
+<div class="material-panel">
+    <form class="edit-main-info" (ngSubmit)="createOrUpdate()" [formGroup]="form" ngNativeValidate>
+        <div class="left-col">
+            <upload-image-control formControlName="image_small" uploadType="artist"></upload-image-control>
+            <button type="submit" mat-raised-button color="accent" class="main-button" *ngIf="artist" trans>Update</button>
+            <button type="submit" mat-raised-button color="accent" class="main-button" *ngIf="!artist" trans>Create</button>
+        </div>
+        <div class="right-col many-inputs admin-artist-edit-inputs">
+
+            <mat-tab-group color="accent" animationDuration="0ms">
+                <mat-tab [label]="'Details' | trans">
+                    <div class="many-inputs tab">
+                        <div class="input-container">
+                            <label for="artist-name" trans>Name</label>
+                            <input type="text" formControlName="name" id="artist-name" required>
+                            <div class="error" *ngIf="errors.name">{{errors.name}}</div>
+                        </div>
+                        <div class="input-container">
+                            <label for="artist-popularity" trans>Popularity</label>
+                            <input type="number" formControlName="spotify_popularity" id="artist-popularity" min="1" max="100">
+                            <div class="error" *ngIf="errors.spotify_popularity">{{errors.spotify_popularity}}</div>
+                        </div>
+                        <div class="input-container">
+                            <label for="artist-genres" trans>Genres</label>
+                            <chip-input placeholder="+Add genre" id="artist-genres" [suggestFn]="suggestGenreFn" formControlName="genres"></chip-input>
+                            <div class="error" *ngIf="errors.genres">{{errors.genres}}</div>
+                        </div>
+                        <div class="input-container">
+                            <label for="auto-update" trans>Auto Update</label>
+                            <select id="auto-update" formControlName="auto_update">
+                                <option [ngValue]="true" trans>Yes</option>
+                                <option [ngValue]="false" trans>No</option>
+                            </select>
+                            <p trans>Whether this artist data (bio, discography, images etc.) should be updated periodically.</p>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab [label]="'Biography' | trans">
+                    <div class="many-inputs tab">
+                        <div class="input-container">
+                            <label for="biography" trans>Biography</label>
+                            <textarea formControlName="bio" id="biography" rows="8"></textarea>
+                        </div>
+                        <div class="bio-images">
+                            <div class="bio-images-title">
+                                <div class="text" trans>Biography Images</div>
+                                <button type="button" class="add-bio-image-button" mat-stroked-button (click)="addBioImage()" trans>Add</button>
+                            </div>
+                            <div class="bio-images-wrapper" formArrayName="bio_images">
+                                <upload-image-control *ngFor="let image of bioImagesArray().controls; index as i" [formControlName]="i" (fileDeleted)="removeBioImage(i)" uploadType="bio"></upload-image-control>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </form>
+
+    <artist-albums-table [artist]="artist"></artist-albums-table>
+</div>

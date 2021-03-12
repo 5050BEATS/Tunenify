@@ -1,0 +1,149 @@
+@import "../../../../scss/variables";
+
+.cdk-drop-list-dragging .mat-row {
+  pointer-events: none;
+}
+
+.mat-row.playing {
+  color: mat-color($app-accent, default);
+
+  .mat-column-number, .mat-column-like, .mat-column-duration {
+    color: inherit;
+  }
+}
+
+.mat-row:hover {
+  background: mat-color($app-background, hover);
+
+  .mat-column-options {
+    visibility: visible;
+  }
+}
+
+.mat-row:hover, .mat-row.playing {
+  .number {
+    display: none;
+  }
+
+  playback-control-button {
+    display: flex;
+    background-color: mat-color($app-foreground, base);
+    color: mat-color($app-background, raised-button);
+    margin: 0;
+  }
+}
+
+.mat-column-number, .mat-column-like, .mat-column-duration {
+  flex: 0 0 65px;
+  color: mat-color($app-foreground, secondary-text);
+}
+
+// align track number and play icon
+.mat-column-number.mat-header-cell {
+  padding-left: 35px;
+}
+
+.number {
+  padding-left: 10px;
+}
+
+.mat-column-options {
+  flex: 0 0 65px;
+  visibility: hidden;
+}
+
+.mat-column-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mat-column-created_at {
+  max-width: 120px;
+  margin-left: 20px;
+}
+
+.mat-table {
+  background: transparent;
+}
+
+a {
+  color: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+loading-indicator {
+  margin: 30px 0;
+}
+
+.selected {
+  background-color: mat-color($app-background, hover);
+}
+
+.mat-table.mobile {
+  .mat-row {
+    display: block;
+    position: relative;
+    min-height: 0;
+    border-bottom: none;
+    padding: 10px;
+    margin-left: -10px;
+    margin-right: -10px;
+    border-radius: 4px;
+
+    &:after {
+      display: none;
+    }
+  }
+
+  .mat-cell {
+    display: block;
+    color: inherit;
+  }
+
+  .mat-column-name {
+    padding-left: 0;
+    font-size: 1.5rem;
+    max-width: 80%;
+  }
+
+  .mat-column-artist {
+    font-size: 1.3rem;
+    padding: 0;
+    color: mat-color($app-foreground, secondary-text);
+    max-width: 85%;
+  }
+
+  .mat-column-options {
+    visibility: visible;
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: mat-color($app-foreground, secondary-text);
+  }
+}
+
+.mat-column-popularity {
+  flex: 0 0 80px;
+  padding: 0 15px;
+  text-align: center;
+
+  .popularity-track {
+    height: 6px;
+    width: 100%;
+    position: relative;
+    background-color: mat-color($app-background, unselected-chip);
+  }
+
+  .popularity-track-inner {
+    height: 100%;
+    width: 0;
+    background-color: mat-color($app-foreground, secondary-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}

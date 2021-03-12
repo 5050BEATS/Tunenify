@@ -1,0 +1,9 @@
+<ng-container *ngIf="channel$ | async as channel">
+    <h1 *ngIf="!channel.hide_title" trans>{{channel.name}}</h1>
+
+    <ad-host slot="ads.general_top"></ad-host>
+
+    <channel-content [channel]="channel" [disablePlayback]="disablePlayback"></channel-content>
+
+    <ad-host slot="ads.general_bottom" class="margin-bottom"></ad-host>
+</ng-container>

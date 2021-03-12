@@ -1,0 +1,31 @@
+<header>
+    <h1>{{totalCount()}} <span trans>Liked tracks</span></h1>
+    <header-play-button [queueId]="queueId()"></header-play-button>
+    <div class="right-column">
+        <div class="input-container">
+            <input type="text" id="album-search" [formControl]="dataSource.searchControl" placeholder="Search within tracks..." trans-placeholder>
+        </div>
+    </div>
+</header>
+
+<ad-host slot="ads.general_top" class="margin-bottom"></ad-host>
+
+<track-list
+        [showArtist]="true"
+        [showAddedAt]="true"
+        [showAlbum]="true"
+        [queueItemId]="queueId()"
+        [dataSource]="dataSource"
+        matSort
+></track-list>
+
+<loading-indicator [isVisible]="dataSource.loading$ | async" class="inline"></loading-indicator>
+
+<div class="no-results-message" *ngIf="dataSource.noResults$ | async">
+    <mat-icon class="icon" svgIcon="audiotrack"></mat-icon>
+    <div class="text">
+        <div class="main" trans>Nothing to display.</div>
+        <div class="secondary" trans>You have not added any songs to your library yet.</div>
+    </div>
+</div>
+

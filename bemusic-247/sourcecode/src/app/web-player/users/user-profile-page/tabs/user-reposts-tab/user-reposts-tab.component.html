@@ -1,0 +1,10 @@
+<ng-container *ngIf="pagination$ | async as pagination">
+    <no-results-message *ngIf="!pagination.data.length">
+        <span primary-text trans>No reposts yet</span>
+        <span secondary-text trans [transValues]="{displayName: user.display_name}">Follow :displayName for updates on reposts they share in the future.</span>
+    </no-results-message>
+    <div [@fadeIn]="visible">
+        <media-list-item [media]="repost.repostable" [reposter]="user" *ngFor="let repost of pagination.data"></media-list-item>
+    </div>
+</ng-container>
+<loading-indicator [isVisible]="loading$ | async" class="inline"></loading-indicator>

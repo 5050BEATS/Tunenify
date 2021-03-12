@@ -1,0 +1,63 @@
+@import "variables";
+
+:host {
+  display: block;
+
+  &.nested media-image {
+    width: 30px;
+    height: 30px;
+  }
+
+  &:hover {
+    .reply-button {
+      visibility: visible;
+    }
+  }
+}
+
+.comment-wrapper {
+  display: flex;
+  padding: 15px 0;
+}
+
+.comment-header {
+  color: mat-color($app-foreground, secondary-text);
+  font-size: 1.3rem;
+  margin-bottom: 5px;
+}
+
+.comment-content {
+  margin-right: 40px;
+}
+
+media-image {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.right-column {
+  margin-left: auto;
+}
+
+.created_at {
+  color: mat-color($app-foreground, secondary-text);
+  font-size: 1.3rem;
+  white-space: nowrap;
+}
+
+.reply-button {
+  visibility: hidden;
+  min-width: 54px;
+  line-height: 22px;
+  margin-top: 3px;
+
+  &.visible {
+    visibility: visible;
+  }
+}
+
+new-comment-form {
+  margin-left: 40px;
+}

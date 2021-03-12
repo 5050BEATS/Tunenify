@@ -1,0 +1,53 @@
+<data-table [dataSource]="dataSource" itemsName="tracks" matSort>
+    <a mat-raised-button color="accent" routerLink="/admin/upload" *ngIf="currentUser.hasPermission('tracks.create')" headerActions trans>Upload</a>
+    <a mat-button routerLink="/admin/tracks/new" *ngIf="currentUser.hasPermission('tracks.create')" headerActions trans>Create</a>
+
+    <button mat-icon-button (click)="maybeDeleteSelectedTracks()" *ngIf="currentUser.hasPermission('tracks.delete')" headerSelectedActions trans>
+        <mat-icon svgIcon="delete"></mat-icon>
+    </button>
+
+    <ng-container matColumnDef="track">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="name" class="name-with-image" trans>Track</mat-header-cell>
+        <mat-cell *matCellDef="let track" class="name-with-image">
+            <media-image [media]="track" default="album"></media-image>
+            <a [routerLink]="urls.track(track)" target="_blank">{{track.name}}</a>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Number</mat-header-cell>
+        <mat-cell *matCellDef="let track"> {{track.number}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="artist">
+        <mat-header-cell *matHeaderCellDef class="name-with-image" trans>Artist</mat-header-cell>
+        <mat-cell *matCellDef="let track" class="name-with-image">
+            <ng-container *ngIf="track.artists[0] as artist">
+                <media-image [media]="artist" default="album"></media-image>
+                <a [routerLink]="urls.artist(artist)" target="_blank">{{artist.name}}</a>
+            </ng-container>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="duration">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Duration</mat-header-cell>
+        <mat-cell *matCellDef="let track"> {{formatDuration(track.duration)}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="plays">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="plays_count" trans>Plays</mat-header-cell>
+        <mat-cell *matCellDef="let track"> {{track.plays_count}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef class="multiple-icons"></mat-header-cell>
+        <mat-cell *matCellDef="let track" class="multiple-icons">
+            <button mat-icon-button (click)="openCrupdateLyricModal(track)" *ngIf="currentUser.hasPermission('lyrics.update')" [matTooltip]="'Edit lyrics' | trans">
+                <mat-icon svgIcon="closed-caption"></mat-icon>
+            </button>
+            <a mat-icon-button [routerLink]="['/admin/tracks', track.id]"  *ngIf="currentUser.hasPermission('tracks.update')" [matTooltip]="'Edit track' | trans">
+                <mat-icon svgIcon="edit"></mat-icon>
+            </a>
+        </mat-cell>
+    </ng-container>
+</data-table>

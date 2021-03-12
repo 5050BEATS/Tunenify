@@ -1,0 +1,81 @@
+<ng-container *ngIf="user$ | async as user">
+    <div class="media-page-header">
+        <div class="header-bg" [style.background-image]="getProfileBackground()"></div>
+        <div class="flex-container">
+            <media-image class="header-image" [media]="user"></media-image>
+            <div class="header-content-wrapper">
+                <div class="header-content">
+                    <h1 class="title">
+                        {{user.display_name}}
+                        <button type="button" class="pro-badge" *ngIf="currentUser.isSubscribed()" mat-icon-button [matTooltip]="'Pro member' | trans">
+                            <mat-icon svgIcon="star"></mat-icon>
+                        </button>
+                    </h1>
+                    <div class="subtitle header-subtitle">
+                        <div class="column first-column">
+                            <div class="column-value">{{user.followers_count}}</div>
+                            <div class="column-title" trans>Followers</div>
+                        </div>
+                        <div class="column">
+                            <div class="column-value">{{user.followed_users_count}}</div>
+                            <div class="column-title" trans>Following</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons" *ngIf="user.id !== currentUser.get('id')">
+                        <button mat-flat-button color="accent" class="action-button" (click)="profile.follow(user, cd)" *ngIf="!profile.currentUserIsFollowing(user)" trans>Follow</button>
+                        <button mat-flat-button color="accent" class="action-button" (click)="profile.unfollow(user, cd)" *ngIf="profile.currentUserIsFollowing(user)" trans>Unfollow</button>
+                    </div>
+                    <div class="text-emphasis" *ngIf="user.profile.description">
+                        <p class="description-text">{{user.profile.description}}</p>
+                    </div>
+                    <div class="profile-location" *ngIf="user.profile.city || user.profile.country">
+                        <span class="text-emphasis">
+                            <span class="city" *ngIf="user.profile.city">{{user.profile.city}}</span>
+                            <span class="country" *ngIf="user.profile.country">, {{user.profile.country}}</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="edit-buttons">
+                    <button type="button" mat-stroked-button *ngIf="user.id === currentUser.get('id')" (click)="openEditProfileModal()">
+                        <mat-icon svgIcon="edit"></mat-icon>
+                        <span trans>Edit</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="nav-links-wrapper">
+            <div class="nav-links">
+                <a class="nav-link" *ngFor="let tab of tabs$ | async" [routerLink]="urls.user(user, tab)" [class.active]="activeTabIs(tab)" trans>{{tab}}</a>
+            </div>
+            <div class="user-links">
+                <a [href]="userLink.url" target="_blank" mat-icon-button *ngFor="let userLink of user.links" [matTooltip]="userLink.title">
+                    <img class="user-link-image" [src]="favicon(userLink.url)" [alt]="userLink.title">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <ad-host slot="ads.general_top" class="margin-top"></ad-host>
+
+    <div class="tabs">
+        <ng-container *ngIf="canUploadTracks$ | async">
+            <uploaded-tracks-tab [user]="user" contentType="uploadedTracks" class="tab" [visible]="activeTabIs('tracks')">
+                <span trans [transValues]="{displayName: user.display_name}">Follow :displayName for updates on tracks they share in the future.</span>
+            </uploaded-tracks-tab>
+            <user-albums-tab [user]="user" class="tab" [visible]="activeTabIs('albums')"></user-albums-tab>
+            <user-reposts-tab [user]="user" class="tab" [visible]="activeTabIs('reposts')"></user-reposts-tab>
+        </ng-container>
+        <user-playlists-tab [user]="user" class="tab" [visible]="activeTabIs('playlists')"></user-playlists-tab>
+        <uploaded-tracks-tab [user]="user" contentType="likedTracks" class="tab" [visible]="activeTabIs('likes')">
+            <span trans [transValues]="{displayName: user.display_name}">Follow :displayName for updates on tracks they like in the future.</span>
+        </uploaded-tracks-tab>
+        <user-follows-tab [user]="user" class="tab" contentType="followers" [visible]="activeTabIs('followers')">
+            <span trans [transValues]="{displayName: user.display_name}">Seems like no one is following :displayName yet.</span>
+        </user-follows-tab>
+        <user-follows-tab [user]="user" class="tab" contentType="followedUsers" [visible]="activeTabIs('following')">
+            <span trans [transValues]="{displayName: user.display_name}">Seems like :displayName is not following anyone yet.</span>
+        </user-follows-tab>
+    </div>
+
+    <ad-host slot="ads.general_bottom" class="margin-bottom"></ad-host>
+</ng-container>

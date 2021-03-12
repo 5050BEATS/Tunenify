@@ -1,0 +1,82 @@
+<mat-table [dataSource]="dataSource" [trackBy]="trackByFn" cdkDropList [cdkDropListDisabled]="!reorderEnabled" (cdkDropListDropped)="orderChanged.emit($event)" [class.mobile]="state.isMobile">
+    <ng-container matColumnDef="number" *ngIf="!state.isMobile">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>#</mat-header-cell>
+        <mat-cell *matCellDef="let track;let i = index;">
+            <span class="number">{{i+1}}</span>
+            <playback-control-button class="small" [track]="track" (play)="playTrack(track, i)" (pause)="player.pause()"></playback-control-button>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="like" *ngIf="!state.isMobile">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let track">
+            <library-track-toggle-button [track]="track"></library-track-toggle-button>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header trans>Name</mat-header-cell>
+        <mat-cell *matCellDef="let track"> {{track.name}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="options">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let track">
+            <button mat-icon-button class="track-options-button" (click)="showContextMenu(track, $event)" [matTooltip]="'Show options' | trans">
+                <mat-icon svgIcon="more-horiz"></mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="artist" *ngIf="showArtist || state.isMobile">
+        <mat-header-cell *matHeaderCellDef trans>Artist</mat-header-cell>
+        <mat-cell *matCellDef="let track">
+            <artists-links-list [track]="track"></artists-links-list>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="album" *ngIf="showAlbum && !state.isMobile">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="album_name" trans>Album</mat-header-cell>
+        <mat-cell *matCellDef="let track">
+            <a *ngIf="track.album" [routerLink]="urls.album(track.album, track?.artists[0])">{{track.album.name}}</a>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="created_at" *ngIf="showAddedAt && !state.isMobile">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="created_at">
+            <mat-icon svgIcon="date-range"></mat-icon>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let track">{{track.added_at_relative || track.created_at_relative}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="duration" *ngIf="!state.isMobile">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="duration">
+            <mat-icon svgIcon="access-time"></mat-icon>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let track">{{formatTrackDuration(track)}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="popularity" *ngIf="showPopularity && !state.isMobile">
+        <mat-header-cell *matHeaderCellDef [mat-sort-header]="getPopularityProp()">
+            <mat-icon svgIcon="trending-up"></mat-icon>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let track">
+            <div class="popularity-track">
+                <div class="popularity-track-inner" [style.width]="getTrackPopularity(track) + '%'"></div>
+            </div>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container *ngIf="!state.isMobile && showHeader">
+        <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+    </ng-container>
+    <mat-row
+            *matRowDef="let track; columns: columns"
+            [class.selected]="selectedTracks.has(track)"
+            [attr.data-id]="track.id"
+            [class.playing]="trackIsPlaying(track)"
+            [contextMenu]="getContextMenuParams(track)"
+            class="track-list-row"
+            cdkDrag
+    ></mat-row>
+</mat-table>

@@ -1,0 +1,15 @@
+@import "variables";
+
+:host {
+  display: block;
+  min-width: 1000px;
+  max-width: 100%;
+
+  .modal-header {
+    margin-bottom: 20px;
+  }
+
+  album-form {
+    padding: 0;
+  }
+}

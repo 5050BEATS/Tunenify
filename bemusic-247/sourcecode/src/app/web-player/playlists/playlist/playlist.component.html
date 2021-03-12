@@ -1,0 +1,64 @@
+<header class="media-page-header" [contextMenu]="{item: playlist, type: 'playlist'}">
+    <div class="flex-container">
+        <media-image class="header-image" [media]="playlist"></media-image>
+        <div class="header-content">
+            <h1 class="title">{{playlist.name}}</h1>
+            <h2 class="creator">
+                <media-image class="creator-image" [media]="getCreator()"></media-image>
+                <a class="creator-link" [routerLink]="urls.user(getCreator())">{{getCreator().display_name}}</a>
+            </h2>
+            <div class="subtitle">
+                <div class="playlist-description subtitle-line" *ngIf="playlist.description">{{playlist.description}}</div>
+                <div class="details subtitle-line">
+                    <div class="tracks-number meta-item">{{playlist.tracks_count}} {{'tracks' | trans}}</div>
+                    <div class="running-time meta-item">{{totalDuration}}</div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <header-play-button [queueId]="queueId()" [tracks]="dataSource.connect() | async"></header-play-button>
+                <button mat-stroked-button class="add-button action-button" (click)="toggleFollow()" *ngIf="!userPlaylists.isCreator(playlist)">
+                    <ng-container *ngIf="userPlaylists.following(playlist.id); else add">
+                        <mat-icon svgIcon="favorite" color="accent"></mat-icon>
+                        <span trans>Followed</span>
+                    </ng-container>
+                    <ng-template #add>
+                        <mat-icon svgIcon="favorite-border"></mat-icon>
+                        <span trans>Follow</span>
+                    </ng-template>
+                </button>
+                <button mat-stroked-button class="action-button more-button" (click)="openContextMenu($event)">
+                    <span trans>More</span>
+                    <mat-icon svgIcon="arrow-drop-down"></mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<ad-host slot="ads.general_top" class="margin-bottom"></ad-host>
+
+<div class="track-list-header">
+    <div class="right-column">
+        <div class="input-container">
+            <input type="text" id="album-search" [formControl]="dataSource.searchControl" placeholder="Search within tracks..." trans-placeholder>
+        </div>
+    </div>
+</div>
+
+<track-list
+        [contextMenuParams]="{type: 'playlistTrack', extra: {playlistId: playlist.id}}"
+        [showArtist]="true"
+        [showAlbum]="true"
+        (delete)="removeTracksFromPlaylist($event)"
+        (orderChanged)="reorderPlaylist($event)"
+        [dataSource]="dataSource"
+        [queueItemId]="queueId()"
+        matSort
+></track-list>
+
+<loading-indicator [isVisible]="dataSource.loading$ | async" class="inline"></loading-indicator>
+
+<no-results-message *ngIf="dataSource.noResults$ | async">
+    <span primary-text trans>Nothing to display.</span>
+    <span secondary-text trans>This playlist does not have any tracks yet.</span>
+</no-results-message>

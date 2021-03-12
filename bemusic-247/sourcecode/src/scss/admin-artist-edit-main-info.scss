@@ -1,0 +1,26 @@
+.edit-main-info {
+  display: flex;
+
+  .left-col {
+    width: 220px;
+    flex-shrink: 0;
+    margin-right: 25px;
+
+    .main-button {
+      display: block;
+      margin-top: 8px;
+      width: 100%;
+      line-height: 42px;
+
+      .mat-icon {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .right-col {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}

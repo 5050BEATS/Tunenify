@@ -1,0 +1,26 @@
+@import "variables";
+
+:host {
+  display: block;
+  padding: $page-margin;
+  overflow-x: hidden;
+}
+
+:host-context(.center-channel-title) h1 {
+  text-align: center;
+}
+
+h1 {
+  font-weight: 300;
+  font-size: 3rem;
+  margin: 0 0 20px;
+  text-transform: capitalize;
+}
+
+.ads-general_top-host {
+  margin-bottom: 30px;
+}
+
+.ads-general_bottom-host {
+  margin-top: 30px;
+}

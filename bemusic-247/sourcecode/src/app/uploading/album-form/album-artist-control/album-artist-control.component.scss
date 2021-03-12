@@ -1,0 +1,101 @@
+@import "variables";
+
+:host {
+  display: block;
+  min-width: 280px;
+  max-width: 100%;
+}
+
+.fake-input {
+  position: relative;
+}
+
+.result-image {
+  display: inline-block;
+  margin-right: 5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.arrow-container {
+  height: 100%;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 20px;
+}
+
+.arrow {
+  position: absolute;
+  border-color: #000 transparent transparent transparent;
+  border-style: solid;
+  border-width: 5px 4px 0 4px;
+  height: 0;
+  width: 0;
+  left: 50%;
+  top: 50%;
+  margin-left: -4px;
+  margin-top: -2px;
+}
+
+::ng-deep .album-artist-control-menu {
+  width: 280px;
+}
+
+.mat-menu-item:first-of-type {
+  border-top: 1px solid mat-color($app-foreground, divider);
+}
+
+.search-input-container {
+  padding: 2px 10px 10px;
+}
+
+.search-input-wrapper {
+  position: relative;
+}
+
+.clear-search-input-button {
+  position: absolute;
+  top: 4px;
+  right: 0;
+  color: mat-color($app-foreground, icon);
+}
+
+.mat-menu-item {
+  display: flex;
+  vertical-align: middle;
+
+  &.selected {
+    background-color: mat-color($app-accent, emphasis);
+  }
+
+  .result-image {
+    width: 35px;
+    height: 35px;
+  }
+
+  .name {
+    text-transform: capitalize;
+  }
+
+  .email {
+    color: mat-color($app-foreground, secondary-text);
+    font-size: 1.3rem;
+  }
+}
+
+.user-info {
+  line-height: initial;
+}
+
+.any-user-info {
+  line-height: 35px;
+}
+
+loading-indicator {
+  position: absolute;
+  top: 12px;
+  right: 40px;
+}

@@ -1,0 +1,26 @@
+<ng-container *ngIf="dataSource.paginatedOnce$ | async">
+    <header>
+        <h1>{{ (dataSource.totalCount$ | async)}} <span trans>Albums</span></h1>
+        <div class="right-column">
+            <div class="input-container">
+                <input type="text" id="album-search" [formControl]="dataSource.searchControl" placeholder="Filters albums..." trans-placeholder>
+            </div>
+        </div>
+    </header>
+
+    <ad-host slot="ads.general_top" class="margin-bottom"></ad-host>
+
+    <media-grid>
+        <album-item *ngFor="let album of albums$ | async; trackBy: trackByFn" [album]="album" [contextMenu]="{item: album, type: 'album'}"></album-item>
+    </media-grid>
+</ng-container>
+
+<loading-indicator [isVisible]="dataSource.loading$ | async" class="inline"></loading-indicator>
+
+<div class="no-results-message" *ngIf="dataSource.noResults$ | async">
+    <mat-icon class="icon" svgIcon="album"></mat-icon>
+    <div class="text">
+        <div class="main" trans>Nothing to display.</div>
+        <div class="secondary" trans>You have not added any albums to your library yet.</div>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+<ng-container *ngIf="pagination$ | async as pagination">
+    <no-results-message *ngIf="!pagination.data.length">
+        <span primary-text trans>No tracks yet</span>
+        <span secondary-text><ng-content></ng-content></span>
+    </no-results-message>
+    <div [@fadeIn]="visible">
+        <media-list-item [media]="track" *ngFor="let track of pagination.data"></media-list-item>
+    </div>
+</ng-container>
+<loading-indicator [isVisible]="loading$ | async" class="inline"></loading-indicator>

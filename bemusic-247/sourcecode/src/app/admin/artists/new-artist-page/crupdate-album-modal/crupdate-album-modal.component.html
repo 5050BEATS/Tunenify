@@ -1,0 +1,11 @@
+<div class="modal-header">
+    <h2 class="modal-title mat-dialog-title" mat-dialog-title>
+        <span *ngIf="data.album" trans>Edit Album</span>
+        <span *ngIf="!data.album" trans>Create Album</span>
+    </h2>
+    <button type="button" (click)="close()" class="close-button no-style" tabindex="-1"><mat-icon svgIcon="close"></mat-icon></button>
+</div>
+
+<mat-dialog-content>
+    <album-form [album]="data.album" [artist]="data.artist" (canceled)="close()" (saved)="confirm($event)"></album-form>
+</mat-dialog-content>

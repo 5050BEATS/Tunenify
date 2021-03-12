@@ -1,0 +1,31 @@
+<ng-container *ngIf="dataSource.paginatedOnce$ | async">
+    <header>
+        <h1>{{ (dataSource.totalCount$ | async)}} <span trans>Artists</span></h1>
+        <div class="right-column">
+            <div class="input-container">
+                <input type="text" id="album-search" [formControl]="dataSource.searchControl" placeholder="Filters artists..." trans-placeholder>
+            </div>
+        </div>
+    </header>
+
+    <ad-host slot="ads.general_top" class="margin-bottom"></ad-host>
+
+    <media-grid>
+        <artist-item *ngFor="let artist of artists$ | async; trackBy: trackByFn" [artist]="artist" [contextMenu]="{item: artist, type: 'artist'}">
+            <div class="secondary-text">
+                {{artist['number_of_tracks']}}
+                <span trans>Songs</span>
+            </div>
+        </artist-item>
+    </media-grid>
+</ng-container>
+
+<loading-indicator [isVisible]="dataSource.loading$ | async" class="inline"></loading-indicator>
+
+<div class="no-results-message" *ngIf="dataSource.noResults$ | async">
+    <mat-icon class="icon" svgIcon="mic"></mat-icon>
+    <div class="text">
+        <div class="main" trans>Nothing to display.</div>
+        <div class="secondary" trans>You have not added any artists to your library yet.</div>
+    </div>
+</div>

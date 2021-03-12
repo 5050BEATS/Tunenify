@@ -1,0 +1,17 @@
+<ng-container *ngIf="pagination$ | async as pagination">
+    <div class="followed-users" *ngIf="pagination.data.length" [@fadeIn]="visible">
+        <div class="follower-row" *ngFor="let followedUser of pagination.data">
+            <media-image [media]="followedUser"></media-image>
+            <div class="meta">
+                <a class="name hover-underline" [routerLink]="urls.user(followedUser)">{{followedUser['display_name']}}</a>
+                <div class="followers">{{followedUser.followers_count}} <span trans>Followers</span></div>
+            </div>
+            <button mat-stroked-button class="follow-button" (click)="profile.follow(followedUser, cd)" *ngIf="!profile.currentUserIsFollowing(followedUser) && ! isCurrentUser(followedUser)" trans>Follow</button>
+            <button mat-stroked-button class="follow-button" (click)="profile.unfollow(followedUser, cd)" *ngIf="profile.currentUserIsFollowing(followedUser) && ! isCurrentUser(followedUser)" trans>Unfollow</button>
+        </div>
+    </div>
+    <no-results-message *ngIf="!pagination.data.length">
+        <span primary-text><ng-content></ng-content></span>
+    </no-results-message>
+</ng-container>
+<loading-indicator [isVisible]="loading$ | async" class="inline"></loading-indicator>

@@ -1,0 +1,202 @@
+<form class="header many-inputs material-panel" (ngSubmit)="submit()" [formGroup]="form">
+    <mat-tab-group color="accent" animationDuration="0ms">
+        <mat-tab [label]="'Details' | trans">
+            <div class="many-inputs tab-content">
+                <div class="input-container name-input-container">
+                    <label for="crupdate-channel-name" trans>Name</label>
+                    <input type="text" id="crupdate-channel-name" formControlName="name" required>
+                    <div class="error" *ngIf="errors.name">{{errors.name}}</div>
+                </div>
+
+                <div class="input-container">
+                    <slug-control formControlName="slug"></slug-control>
+                    <div class="error" *ngIf="errors.slug">{{errors.slug}}</div>
+                </div>
+
+                <div class="input-container">
+                    <label for="crupdate-channel-content-type" trans>Content Type</label>
+                    <select id="crupdate-channel-content-type" formControlName="content_type">
+                        <option value="mixed" trans>Mixed</option>
+                        <option value="track" trans>Tracks</option>
+                        <option value="artist" trans>Artists</option>
+                        <option value="album" trans>Albums</option>
+                        <option value="playlist" trans>Playlists</option>
+                        <option value="genre" trans>Genres</option>
+                        <option value="channel" trans>Channels</option>
+                        <option value="user" trans>Users</option>
+                    </select>
+                    <div class="error" *ngIf="errors.content_type">{{errors.content_type}}</div>
+                </div>
+
+                <div class="input-container">
+                    <label for="crupdate-channel-layout" trans>Layout</label>
+                    <select id="crupdate-channel-layout" formControlName="layout">
+                        <option value="grid" trans>Grid</option>
+                        <option value="carousel" trans>Carousel</option>
+                        <ng-container *ngIf="form.get('content_type').value === 'track'">
+                            <option value="trackTable" trans>Track Table</option>
+                            <option value="trackList" trans>Track List</option>
+                        </ng-container>
+                    </select>
+                    <div class="error" *ngIf="errors.layout">{{errors.layout}}</div>
+                    <p *ngIf="form.get('layout').value === 'carousel'" trans>Carousel layout will only affect nested channels.</p>
+                </div>
+
+                <div class="input-container">
+                    <label for="crupdate-channel-auto-update">
+                        <span trans>Auto Update</span>
+                        <info-popover *ngIf="!settings.get('site.hide_docs_buttons')">
+                            <div class="title" trans>Auto update channel content</div>
+                            <div class="description" trans>
+                                Select with what type of content this channel should be automatically updated.
+                            </div>
+                            <div class="link">
+                                <mat-icon svgIcon="link"></mat-icon>
+                                <a href="https://support.vebto.com/help-center/articles/28/31/170/channels" target="_blank">Learn more here.</a>
+                            </div>
+                        </info-popover>
+                    </label>
+                    <div class="input-with-action" [class.hide-action]="!channel || !form.get('auto_update').value">
+                        <select id="crupdate-channel-auto-update" formControlName="auto_update">
+                            <option [ngValue]="null" trans>Dont update automatically</option>
+                            <optgroup label="Local Database">
+                                <option value="local:track:top" trans>Local: Popular tracks</option>
+                                <option value="local:album:top" trans>Local: Popular albums</option>
+                                <option value="local:genre:top" trans>Local: Popular genres</option>
+                                <option value="local:album:new" trans>Local: Most recent albums (By release date)</option>
+                                <option value="local:track:new" trans>Local: Most recent tracks (By date added)</option>
+                                <option value="local:playlist:top" trans>Local: Popular Playlists</option>
+                                <option value="local:artist:top" trans>Local: Popular Artists</option>
+                            </optgroup>
+                            <optgroup label="Spotify" *ngIf="settings.get('spotify_is_setup')">
+                                <option value="spotify:track:top" trans>Spotify: Popular tracks</option>
+                                <option value="spotify:album:top" trans>Spotify: Popular albums</option>
+                                <option value="spotify:album:new" trans>Spotify: New Releases</option>
+                                <option value="spotify:artist:top" trans>Spotify: Popular artists</option>
+                            </optgroup>
+                            <optgroup label="Last.fm" *ngIf="settings.get('lastfm_is_setup')">
+                                <option value="lastfm:genre:top" trans>Last.fm: Popular genres</option>
+                            </optgroup>
+                        </select>
+                        <button type="button" mat-flat-button color="accent" (click)="autoUpdateChanelContents()" [disabled]="loading$ | async" [matTooltip]="'Update channel content now' | trans">
+                            <mat-icon svgIcon="refresh"></mat-icon>
+                        </button>
+                    </div>
+                    <div class="error" *ngIf="errors.auto_update">{{errors.auto_update}}</div>
+                    <p *ngIf="form.get('auto_update').value" trans>Channel will only automatically update once a day.</p>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab [label]="'SEO' | trans">
+            <div class="many-inputs tab-content">
+                <div class="input-container">
+                    <label for="crupdated_channel_seo_title" trans>SEO Title</label>
+                    <input type="text" id="crupdated_channel_seo_title" formControlName="seo_title">
+                </div>
+
+                <div class="input-container">
+                    <label for="crupdate-channel_seo_description" trans>SEO Description</label>
+                    <textarea type="text" id="crupdate-channel_seo_description" formControlName="seo_description" rows="6"></textarea>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+
+    <div class="action-row">
+        <button mat-raised-button type="submit" color="accent" [disabled]="loading$ | async" trans>Save</button>
+        <mat-slide-toggle formControlName="hide_title" trans>Hide Title</mat-slide-toggle>
+    </div>
+    <mat-progress-bar mode="indeterminate" color="accent" *ngIf="loading$ | async"></mat-progress-bar>
+</form>
+
+<div class="material-panel channel-content">
+    <h2 trans>Channel Content</h2>
+
+    <div class="input-container search-input-container">
+        <label for="content-search" class="hidden" trans>Search for content</label>
+        <div class="input-icon-container">
+            <input type="text" [matAutocomplete]="contentAuto" id="content-search" [formControl]="searchControl"
+                   placeholder="Search for content to add..." trans-placeholder>
+            <mat-icon svgIcon="search"></mat-icon>
+        </div>
+    </div>
+
+    <mat-autocomplete #contentAuto="matAutocomplete" [displayWith]="displayFn"
+                      (optionSelected)="attachContentItem($event.option.value)">
+        <mat-option *ngFor="let contentItem of searchResults$ | async" [value]="contentItem">
+            <div class="mat-option-wrapper">
+                <media-image [media]="contentItem"></media-image>
+                <div class="multiple-lines">
+                    <div class="ellipsis">{{contentItem.name || contentItem.display_name}}</div>
+                    <div class="secondary ellipsis">{{displayType(contentItem)}}</div>
+                </div>
+            </div>
+        </mat-option>
+    </mat-autocomplete>
+
+    <div cdkDropListGroup>
+        <div cdkDropList [cdkDropListEnterPredicate]="dropListEnterPredicate"
+             (cdkDropListDropped)="dropListDropped()"></div>
+        <div class="content-grid">
+            <div
+                    class="content-item content-grid-item"
+                    [class.channel-item]="isChannel(item)"
+                    cdkDropList
+                    [cdkDropListEnterPredicate]="dropListEnterPredicate"
+                    (cdkDropListDropped)="dropListDropped()"
+                    *ngFor="let item of channelContent$ | async"
+            >
+                <figure cdkDrag (cdkDragMoved)="dragMoved($event)">
+                    <div class="image-wrapper" [class.channel-bg-wrapper]="isChannel(item)">
+                        <ng-container *ngIf="isChannel(item)">
+                            <div class="channel-bg"></div>
+                            <div class="content-grid channel-content-grid">
+                                <div class="content-grid-item" *ngFor="let item of item.content | slice:0:5">
+                                    <div class="image-wrapper">
+                                        <media-image [media]="item"></media-image>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <media-image [media]="item" *ngIf="!isChannel(item)"></media-image>
+
+                        <div class="action-buttons">
+                            <button class="action-button drag-action-button" type="button" cdkDragHandle mat-mini-fab>
+                                <mat-icon svgIcon="drag-handle"></mat-icon>
+                            </button>
+                            <button class="action-button" type="button" color="warn" (click)="detachContentItem(item)"
+                                    [disabled]="detaching === item.id" mat-mini-fab>
+                                <mat-icon svgIcon="delete"></mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <figcaption>
+                        <div class="content-item-name">{{item.name}}</div>
+                        <div class="content-item-type" trans>{{displayType(item)}}</div>
+                    </figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+
+    <div class="auto-update-message no-results-message"
+         *ngIf="form.get('auto_update').valueChanges | async; else noResults">
+        <mat-icon class="icon" svgIcon="update"></mat-icon>
+        <div class="text">
+            <div class="main">
+                Automatic Update
+            </div>
+            <div class="secondary">
+                This channel content will be updated automatically.
+            </div>
+        </div>
+    </div>
+
+    <ng-template #noResults>
+        <no-results-message *ngIf="!(channelContent$ | async)?.length">
+            <span primary-text trans>Channel is empty</span>
+            <span secondary-text trans>No content is attached to this channel yet.</span>
+        </no-results-message>
+    </ng-template>
+</div>

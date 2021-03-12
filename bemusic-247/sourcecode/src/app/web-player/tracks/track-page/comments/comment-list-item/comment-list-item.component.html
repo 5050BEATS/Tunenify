@@ -1,0 +1,17 @@
+<div class="comment-wrapper">
+    <media-image [media]="comment.user"></media-image>
+    <div class="comment-meta">
+        <div class="comment-header">
+            {{ comment.user.display_name }} {{ 'at' | trans }} {{ postedAt(comment.position) }}
+        </div>
+        <div class="comment-content">
+            {{comment.content}}
+        </div>
+    </div>
+    <div class="right-column">
+        <div class="created_at">{{comment.relative_created_at}}</div>
+        <button mat-stroked-button class="reply-button" *ngIf="comment.depth < 5 && currentUser.hasPermission('comments.create')" (click)="toggleNewCommentForm()" trans>Reply</button>
+    </div>
+</div>
+
+<new-comment-form [inReplyTo]="comment" [visible]="commentFormVisible$ | async" (created)="hideNewCommentForm()"></new-comment-form>

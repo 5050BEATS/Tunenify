@@ -1,0 +1,18 @@
+{
+  "/secure": {
+    "target": "http://localhost/bemusic/server",
+    "secure": false
+  },
+  "/storage": {
+    "target": "http://localhost/bemusic/server",
+    "secure": false
+  },
+  "/client": {
+    "target": "http://localhost/bemusic/server",
+    "secure": false
+  },
+  "/__clockwork": {
+    "target": "http://localhost/bemusic/server/public",
+    "secure": false
+  }
+}

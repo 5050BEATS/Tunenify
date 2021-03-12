@@ -1,0 +1,44 @@
+<header class="media-page-header" [contextMenu]="{item: album, type: 'album'}">
+    <div class="flex-container">
+        <media-image class="header-image" [media]="album"></media-image>
+        <div class="header-content">
+            <h1 class="title">{{album.name}}</h1>
+            <h2 class="artist">
+                <media-image class="artist-image" [media]="album.artist"></media-image>
+                <artists-links-list class="artist-name" [artists]="[album.artist]"></artists-links-list>
+            </h2>
+            <div class="subtitle">
+                <div class="tracks-number meta-item">{{album.tracks.length}} {{'tracks' | trans}}</div>
+                <div class="running-time meta-item">{{totalDuration}} {{'mins' | trans}}</div>
+                <div class="release-date meta-item">{{album.release_date | formattedDate}}</div>
+            </div>
+            <div class="action-buttons">
+                <header-play-button [queueId]="queueId()" [tracks]="album.tracks"></header-play-button>
+                <button mat-stroked-button class="add-button action-button" (click)="toggleLike()" [disabled]="adding">
+                    <ng-container *ngIf="library.has(album); else add">
+                        <mat-icon svgIcon="favorite" color="accent"></mat-icon>
+                        <span trans>Added</span>
+                    </ng-container>
+                    <ng-template #add>
+                        <mat-icon svgIcon="favorite-border"></mat-icon>
+                        <span trans>Add</span>
+                    </ng-template>
+                </button>
+                <button mat-stroked-button class="action-button more-button" (click)="openContextMenu($event)">
+                    <span trans>More</span>
+                    <mat-icon svgIcon="arrow-drop-down"></mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<mat-chip-list *ngIf="album.tags?.length" class="tags-list">
+    <mat-chip class="genre" *ngFor="let tag of album.tags">
+        <a [routerLink]="['/tag', tag.name]">#{{tag.name}}</a>
+    </mat-chip>
+</mat-chip-list>
+
+<ad-host slot="ads.album_above" class="margin-bottom"></ad-host>
+
+<track-list [dataSource]="dataSource" matSort [queueItemId]="queueId()" [showPopularity]="true"></track-list>

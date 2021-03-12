@@ -1,0 +1,25 @@
+{
+    "extends": "../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "../out-tsc/app",
+        "allowSyntheticDefaultImports": true,
+        "types": [
+            "stripe-v3",
+            "hammerjs",
+            "youtube",
+            "wicg-mediasession"
+        ]
+    },
+    "files": [
+        "main.ts",
+        "polyfills.ts"
+    ],
+    "include": [
+        "src/**/*.ts",
+        "common/typings.d.ts"
+    ],
+    "exclude": [
+        "src/test.ts",
+        "src/**/*.spec.ts"
+    ]
+}

@@ -1,0 +1,116 @@
+<header class="media-page-header" [contextMenu]="{item: artist, type: 'artist'}">
+    <div class="flex-container">
+        <media-image class="header-image round" [media]="artist"></media-image>
+        <div class="header-content">
+            <h1 class="title">{{artist.name}}</h1>
+            <div class="subtitle" *ngIf="!state.isMobile">
+                <a [routerLink]="urls.genre(genre)" class="genre hover-underline" *ngFor="let genre of artist.genres">{{genre.display_name || genre.name}}</a>
+            </div>
+            <div class="action-buttons">
+                <header-play-button [queueId]="queueId()"></header-play-button>
+                <button mat-stroked-button class="add-button action-button" (click)="toggleLike()" [disabled]="adding">
+                    <ng-container *ngIf="library.has(artist); else add">
+                        <mat-icon svgIcon="favorite" color="accent"></mat-icon>
+                        <span trans>Added</span>
+                    </ng-container>
+                    <ng-template #add>
+                        <mat-icon svgIcon="favorite-border"></mat-icon>
+                        <span trans>Add</span>
+                    </ng-template>
+                </button>
+                <button mat-stroked-button class="action-button more-button" (click)="showArtistContextMenu($event)">
+                    <span trans>More</span>
+                    <mat-icon svgIcon="arrow-drop-down"></mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="nav-links">
+        <a class="nav-link" [routerLink]="urls.artist(artist)" [class.active]="activeTab === 'overview'" trans>Overview</a>
+        <a class="nav-link" *ngIf="hasSimilar()" [routerLink]="urls.artist(artist, 'similar')" [class.active]="activeTab === 'similar'" trans>Similar Artists</a>
+        <a class="nav-link" [routerLink]="urls.artist(artist, 'about')" [class.active]="activeTab === 'about'" trans>About</a>
+    </div>
+</header>
+
+<div class="tab overview" [class.hidden]="activeTab !== 'overview'">
+    <div class="left-col">
+        <div class="popular-tracks">
+            <div class="title" trans>Popular Songs</div>
+            <track-list [dataSource]="artist.top_tracks | slice:0:popularTracksCount" [queueItemId]="queueId()" matSort [matSortDisabled]="true" [showHeader]="false"></track-list>
+            <button class="no-style dark-button" (click)="togglePopularTracksCount()">
+                <span *ngIf="popularTracksCount === 5" trans>Show More</span>
+                <span *ngIf="popularTracksCount !== 5" trans>Show Less</span>
+            </button>
+        </div>
+
+        <ad-host slot="ads.artist_top"></ad-host>
+
+        <section class="albums" [ngClass]="albumsLayout">
+            <div class="albums-section-header title">
+                <span trans>Albums</span>
+                <div class="actions" *ngIf="albumsLayoutShouldBeToggleable">
+                    <button class="no-style" [class.active]="albumsLayout === 'list'" (click)="toggleAlbumsLayout()"><mat-icon svgIcon="format-list-bulleted"></mat-icon></button>
+                    <button class="no-style" [class.active]="albumsLayout === 'grid'" (click)="toggleAlbumsLayout()"><mat-icon svgIcon="border-all"></mat-icon></button>
+                </div>
+            </div>
+
+            <ng-container *ngFor="let album of albums.data; trackBy: albumTrackByFn">
+                <ng-container *ngIf="albumsLayout === 'list'">
+                    <div class="album" *ngIf="album.tracks.length">
+                        <div class="album-header">
+                            <media-image [media]="album"></media-image>
+                            <div class="meta">
+                                <a class="album-name hover-underline" [routerLink]="urls.album(album, artist)">{{album.name}}</a>
+                                <div class="release-date">{{album.release_date}}</div>
+                                <button mat-stroked-button (click)="showAlbumContextMenu(album, $event)" trans>More...</button>
+                            </div>
+                        </div>
+                        <track-list [dataSource]="album.tracks" [album]="album" [queueItemId]="albumQueueId(album)" matSort [matSortDisabled]="true"></track-list>
+                    </div>
+                </ng-container>
+            </ng-container>
+            <media-grid *ngIf="albumsLayout === 'grid'">
+                <album-item *ngFor="let album of albums.data" [album]="album"></album-item>
+            </media-grid>
+            <loading-indicator [isVisible]="loading" class="inline"></loading-indicator>
+        </section>
+    </div>
+    <div class="right-col" *ngIf="!state.isMobile && albumsLayout === 'list'">
+        <div class="similar-artists" *ngIf="hasSimilar()">
+            <div class="title" trans>Similar Artists</div>
+            <a class="similar-artist" *ngFor="let artist of getSimilar(4)" [routerLink]="urls.artist(artist)">
+                <media-image [media]="artist"></media-image>
+                <div class="artist-name">{{artist.name}}</div>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="tab similar" *ngIf="activeTab === 'similar'">
+    <media-grid *ngIf="hasSimilar()">
+        <artist-item [artist]="artist" *ngFor="let artist of getSimilar(20)"></artist-item>
+    </media-grid>
+
+    <no-results-message *ngIf="!hasSimilar()">
+            <span primary-text>
+                <span trans>Could not find any similar artists for </span>
+                <span>{{artist.name}}</span>
+            </span>
+    </no-results-message>
+</div>
+<div class="tab bio" *ngIf="activeTab === 'about'">
+    <ng-container *ngIf="artist.bio_images.length || artist.bio; else noBio">
+        <div class="bio-images" *ngIf="artist.bio_images.length">
+            <img [src]="image.url" *ngFor="let image of artist.bio_images">
+        </div>
+        <div class="bio-text" *ngIf="artist.bio">{{artist.bio.content}}</div>
+    </ng-container>
+
+    <ng-template #noBio>
+        <no-results-message>
+            <span primary-text>
+                {{ ('Could not find biography for' | trans) }} {{artist.name}}
+            </span>
+        </no-results-message>
+    </ng-template>
+</div>
+<ad-host slot="ads.artist_bottom" class="margin-top"></ad-host>

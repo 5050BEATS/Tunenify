@@ -1,0 +1,38 @@
+<div class="fake-input" [matMenuTriggerFor]="menu" (menuOpened)="onMenuOpened()" (menuClosed)="onMenuClosed()">
+        <span *ngIf="selectedArtist$ | async as selectedArtist; else anyArtist">
+            <media-image class="result-image" [media]="selectedArtist"></media-image>
+            {{selectedArtist.name}}
+        </span>
+    <ng-template #anyArtist>
+        <span trans>None</span>
+    </ng-template>
+    <div class="arrow-container">
+        <div class="arrow"></div>
+    </div>
+</div>
+
+<mat-menu #menu="matMenu" class="album-artist-control-menu">
+    <div class="input-container search-input-container" (click)="$event.stopPropagation()">
+        <div class="search-input-wrapper">
+            <input type="text" [formControl]="searchFormControl" placeholder="Search..." (blur)="searchInput.focus()" #searchInput mat-menu-item trans-placeholder>
+            <button class="clear-search-input-button" mat-icon-button (click)="clearSearchInput()" *ngIf="searchFormControl.value">
+                <mat-icon svgIcon="close"></mat-icon>
+            </button>
+            <loading-indicator [isVisible]="loading$ | async" class="small"></loading-indicator>
+        </div>
+    </div>
+    <button mat-menu-item (click)="selectArtist(null)">
+        <media-image default="artist" class="result-image"></media-image>
+        <div class="info any-user-info">
+            <div class="name" trans>No Artist</div>
+        </div>
+    </button>
+    <button mat-menu-item *ngFor="let artist of artists$ | async" (click)="selectArtist(artist)">
+        <media-image class="result-image" [media]="artist"></media-image>
+        <div class="user-info">
+            <div class="name">{{artist.name}}</div>
+            <div class="email" trans>Artist</div>
+        </div>
+    </button>
+    <button mat-menu-item disabled *ngIf="searchedOnce && !(artists$ | async).length" trans>No artists found.</button>
+</mat-menu>

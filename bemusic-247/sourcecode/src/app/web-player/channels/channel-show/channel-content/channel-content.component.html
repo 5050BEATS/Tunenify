@@ -1,0 +1,66 @@
+<div [ngSwitch]="channel.content_type">
+    <div *ngSwitchCase="'track'">
+        <div [ngSwitch]="channel.layout">
+            <ng-container *ngSwitchCase="'trackList'">
+                <div class="user-track-list">
+                    <media-list-item [media]="track" *ngFor="let track of channel.content"></media-list-item>
+                </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="'trackTable'">
+                <track-list [dataSource]="trackTableSource" [showAlbum]="true" [showArtist]="true" matSort></track-list>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+                <media-grid [carousel]="channel.layout === 'carousel' && nested">
+                    <track-item *ngFor="let item of channel.content" [track]="item" [contextMenu]="{item: item, type: 'track'}"></track-item>
+                </media-grid>
+            </ng-container>
+        </div>
+    </div>
+    <div class="sub-channel" *ngSwitchCase="'channel'">
+        <ng-container *ngFor="let channel of channel.content">
+            <h2 *ngIf="!channel.hide_title">
+                <a [routerLink]="['/channels', channel.slug]" trans>{{channel.name}}</a>
+                <mat-icon svgIcon="keyboard-arrow-right"></mat-icon>
+            </h2>
+            <channel-content [channel]="channel" [nested]="true" [disablePlayback]="disablePlayback"></channel-content>
+        </ng-container>
+    </div>
+    <div *ngSwitchCase="'mixed'">
+        <media-grid [carousel]="channel.layout === 'carousel' && nested">
+            <ng-container *ngFor="let item of channel.content">
+                <ng-container [ngSwitch]="item.model_type">
+                    <track-item [disablePlayback]="disablePlayback" *ngSwitchCase="modelTypes.track" [track]="item" [contextMenu]="{item: item, type: 'track'}"></track-item>
+                    <album-item [disablePlayback]="disablePlayback" *ngSwitchCase="modelTypes.album" [album]="item" [contextMenu]="{item: item, type: 'album'}"></album-item>
+                    <artist-item [disablePlayback]="disablePlayback" *ngSwitchCase="modelTypes.mixedArtist" [artist]="item" [contextMenu]="{item: item, type: 'artist'}"></artist-item>
+                    <playlist-item *ngSwitchCase="modelTypes.playlist" [playlist]="item" [contextMenu]="{item: item, type: 'playlist'}"></playlist-item>
+                    <genre-item *ngSwitchCase="modelTypes.genre" [genre]="item"></genre-item>
+                </ng-container>
+            </ng-container>
+        </media-grid>
+    </div>
+    <ng-container *ngSwitchDefault>
+        <media-grid [carousel]="channel.layout === 'carousel' && nested">
+            <ng-container *ngFor="let item of channel.content">
+                <ng-container [ngSwitch]="item.model_type">
+                    <track-item [disablePlayback]="disablePlayback" *ngSwitchCase="modelTypes.track" [track]="item" [contextMenu]="{item: item, type: 'track'}"></track-item>
+                    <album-item [disablePlayback]="disablePlayback" *ngSwitchCase="modelTypes.album" [album]="item" [contextMenu]="{item: item, type: 'album'}"></album-item>
+                    <artist-item [disablePlayback]="disablePlayback" *ngSwitchCase="modelTypes.mixedArtist" [artist]="item" [contextMenu]="{item: item, type: 'artist'}"></artist-item>
+                    <playlist-item *ngSwitchCase="modelTypes.playlist" [playlist]="item" [contextMenu]="{item: item, type: 'playlist'}"></playlist-item>
+                    <genre-item *ngSwitchCase="modelTypes.genre" [genre]="item"></genre-item>
+                </ng-container>
+            </ng-container>
+        </media-grid>
+    </ng-container>
+
+    <div class="no-results-message" *ngIf="!channel.content?.length && !nested">
+        <mat-icon class="icon" svgIcon="album"></mat-icon>
+        <div class="text">
+            <div class="main" trans>Nothing to display.</div>
+            <div class="secondary" trans>
+                <span trans>Seems like this channel does not have any content yet.</span>
+                &ngsp;
+                <a class="hover-underline" [routerLink]="['/admin/channels', channel.id]" *ngIf="user.hasPermission('channels.edit')" trans>Configure</a>
+            </div>
+        </div>
+    </div>
+</div>
